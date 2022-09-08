@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 // import { useHistory } from 'react-router-dom'
+import {AppBar, Divider, Grid, MenuItem, Select, Toolbar, Typography} from '@material-ui/core'
+import {makeStyles} from "@material-ui/styles"
 
-import { Divider, Grid, Typography } from '@material-ui/core'
-import { makeStyles } from "@material-ui/styles"
-
-import { getRecommendedSearch, getResultSearch } from '../api/api_search'
+import {getRecommendedSearch, getResultSearch} from '../api/api_search'
 import "./../common.css"
+import {useSearchbarItems} from "../utils/hooks";
 
 
 const useStyle = makeStyles(theme => ({
@@ -93,15 +93,16 @@ const useStyle = makeStyles(theme => ({
   }
 }))
 
-export const CustomSearchbar = ({ onAyaSelect }) => {
-  // var history = useHistory()
-  // const [index, setIndex] = useState(null)
+export const CustomSearchbar = ({ onAyaSelect , addCustomShape , addCustomImage}) => {
   const [value, setValue] = useState("")
-  // const [lines, setLines] = useState([])
   const [results, setResults] = useState([])
   const [recommends, setRecommends] = useState([])
   const [isRecomVisible, setIsRecomVisible] = useState(false)
   const [isResultVisible, setIsResultVisible] = useState(false)
+  const {
+    selectedTheme , selectedConcept , handleChangeConcept ,
+    handleChangeTheme , handleChangeNewTheme , selectedNewTheme
+  } = useSearchbarItems({addCustomShape , addCustomImage});
   const classes = useStyle()
 
 
@@ -258,28 +259,68 @@ export const CustomSearchbar = ({ onAyaSelect }) => {
     <div className="app-container fixed-top w-100 disable-pe-not-children"
       style={{ textAlign: 'center' }}>
       <div className="p-2 disable-pe-not-children d-flex">
-        <input id="searchbar1" type="text" value={value}
-          onChange={e => {
+        <AppBar position="static" style={{borderRadius : 10}}>
+          <Toolbar>
+            <input id="searchbar1" type="text" value={value}
+                   onChange={e => {
 
-            setValue(e.target.value)
-            // console.log(value)
-            setIsResultVisible(false)
-            if ((e.target.value).length > 1) {
-              setIsRecomVisible(true)
-              relateWithServer((e.target.value))
-            }
-          }}
-          placeholder={"جست و جوی سریع.."}
-          className={classes.inputClass}
-          onMouseOver={HoverSearchHandler}
-          onMouseLeave={LeaveSearchHandler}
-        />
-      </div>
-      <div className="recommed-container">
-        <Recommend recom={recommends} />
-      </div>
-      <div className="result-container">
-        <Result results={results} />
+                     setValue(e.target.value)
+                     // console.log(value)
+                     setIsResultVisible(false)
+                     if ((e.target.value).length > 1) {
+                       setIsRecomVisible(true)
+                       relateWithServer((e.target.value))
+                     }
+                   }}
+                   placeholder={"جست و جوی سریع.."}
+                   className={classes.inputClass}
+                   onMouseOver={HoverSearchHandler}
+                   onMouseLeave={LeaveSearchHandler}
+            />
+            <div className="recommed-container">
+              <Recommend recom={recommends} />
+            </div>
+            <div className="result-container">
+              <Result results={results} />
+            </div>
+            <Select
+                className={"selectbox"}
+                value={selectedConcept}
+                onChange={handleChangeConcept}
+            >
+              <MenuItem value={1}>انتخاب مفاهیم</MenuItem>
+              <MenuItem value={2}>مفاهیم شماره 1</MenuItem>
+              <MenuItem value={3}>مفاهیم شماره 2</MenuItem>
+              <MenuItem value={4}>مفاهیم شماره 3</MenuItem>
+            </Select>
+            <Select
+                value={selectedTheme}
+                className={"selectbox"}
+                onChange={handleChangeTheme}
+            >
+              <MenuItem value={1}>قالب های آماده</MenuItem>
+              <MenuItem value={2}>پلکان نصر الله</MenuItem>
+              <MenuItem value={3}>شجره الطیبه</MenuItem>
+              <MenuItem value={4}>رشته کوه</MenuItem>
+              <MenuItem value={5}>وضعیت موجود مطلوب</MenuItem>
+              <MenuItem value={6}>جاده زمان</MenuItem>
+              <MenuItem value={7}>قالب</MenuItem>
+            </Select>
+            <Select
+                className={"selectbox"}
+                value={selectedNewTheme}
+                onChange={handleChangeNewTheme}
+            >
+              <MenuItem value={1}>ساخت قالب جدید</MenuItem>
+              <MenuItem value={2}>پلکان</MenuItem>
+              <MenuItem value={3}>شجره</MenuItem>
+              <MenuItem value={4}>رشته کوه</MenuItem>
+              <MenuItem value={5}>وضعیت موجود و مطلوب</MenuItem>
+              <MenuItem value={6}>جاده زمان</MenuItem>
+              <MenuItem value={7}>قالب</MenuItem>
+            </Select>
+          </Toolbar>
+        </AppBar>
       </div>
     </div>
   )
